@@ -19,76 +19,112 @@ cd dxx-redux
 #Setup Dependencies
 sudo apt install build-essential git cmake libphysfs-dev libsdl1.2-dev libsdl-mixer1.2-dev libpng-dev libglew-dev
 
-#Setup cmake
-cd d1
+#Setup cmake for D1
+cd $md_build/d1
+# (see cmake -B build -L for more options)
+# cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+#Editor causes build time error (inferno)
+#cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DIPV6=ON -DEDITOR=ON -DASM=ON
+# IPV6 Build fails with errors:  error: ‘struct sockaddr_in6’ has no member named ‘sin_addr’; did you mean ‘sin6_addr’?
 cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
 
+# Build D1 (4 cores on a Raspi5)
+cmake --build build -j4
+
+#Setup cmake for D2
+cd $md_build/d2
+# (see cmake -B build -L for more options)
+# cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+#Editor causes build time error (inferno)
+#cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DIPV6=ON -DEDITOR=ON -DASM=ON
+# IPV6 Build fails with errors:  error: ‘struct sockaddr_in6’ has no member named ‘sin_addr’; did you mean ‘sin6_addr’?
+cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+
+# Build D1 (4 cores on a Raspi5)
+cmake --build build -j4
+
 #Create RetroPie Ports Installation of DXX-Rebirth
-dest_d1="$ports_root/descent1"
-dest_d2="$ports_root/descent2"
+dest_d1="$ports_root/d1x-redux"
+dest_d2="$ports_root/d2x-redux"
 mkdir "$dest_d1"
 mkdir "$dest_d2"
 
 #Copy compiled binaries to final destinations
-cp "$md_build/build/d1x-rebirth/d1x-rebirth" "$dest_d1/"
-cp "$md_build/build/d2x-rebirth/d2x-rebirth" "$dest_d2/"
+cp -rf "$md_build/d1/build/main/d1x-redux" "$dest_d1/"
+cp -rf "$md_build/d2/build/main/d2x-redux" "$dest_d2/"
 
 # Copy files from build to destination folders in ports
 #D1
-cp "$md_build/d1x-rebirth/INSTALL.txt" "$dest_d1/D1X-INSTALL.txt"
-cp "$md_build/d1x-rebirth/RELEASE-NOTES.txt" "$dest_d1/D1X-RELEASE-NOTES.txt"
-cp "$md_build/d1x-rebirth/d1x.ini" "$dest_d1/"
+cp "$md_build/d1/INSTALL.txt" "$dest_d1/D1X-INSTALL.txt"
+cp "$md_build/d1/RELEASE-NOTES.txt" "$dest_d1/D1X-RELEASE-NOTES.txt"
+cp "$md_build/d1/d1x-default.ini" "$dest_d1/"
 cp "$md_build/COPYING.txt" "$dest_d1/"
-cp "$md_build/GPL-3.txt" "$dest_d1/"
-cp "$md_build/d1x-rebirth/README.RPi" "$dest_d1/"
-cp "$md_build/d1x-rebirth/d1x.ini" "$dest_d1/"
+cp "$md_build/README.md" "$dest_d1/"
+cp "$md_build/d1/README.RPi" "$dest_d1/"
+cp "$md_build/d1/INSTALL.txt" "$dest_d1/"
 
 #D2
-cp "$md_build/d2x-rebirth/INSTALL.txt" "$dest_d2/D2X-INSTALL.txt"
-cp "$md_build/d2x-rebirth/RELEASE-NOTES.txt" "$dest_d2/D2X-RELEASE-NOTES.txt"
-cp "$md_build/d2x-rebirth/d2x.ini" "$dest_d2/"
+cp "$md_build/d2/INSTALL.txt" "$dest_d2/D2X-INSTALL.txt"
+cp "$md_build/d2/RELEASE-NOTES.txt" "$dest_d2/D2X-RELEASE-NOTES.txt"
+cp "$md_build/d2/d2x-default.ini" "$dest_d2/"
 cp "$md_build/COPYING.txt" "$dest_d2/"
-cp "$md_build/GPL-3.txt" "$dest_d2/"
-cp "$md_build/d2x-rebirth/README.RPi" "$dest_d2/"
-cp "$md_build/d2x-rebirth/d2x.ini" "$dest_d2/"
+cp "$md_build/README.md" "$dest_d2/"
+cp "$md_build/d2/README.RPi" "$dest_d2/"
+cp "$md_build/d2/INSTALL.txt" "$dest_d2/"
 
-# Make the d1x-rebirth folder structures
-mkdir "$dest_d1/data"
-mkdir "$dest_d1/demos"
-mkdir "$dest_d1/missions"
-mkdir "$dest_d1/players"
-mkdir "$dest_d1/screenshots"
-mkdir "$dest_d1/soundtracks"
+# Define the path and then Make the d1x-redux folder structures
+d1data="$dest_d1/Data"
+d1demos="$dest_d1/Demos"
+d1missions="$dest_d1/Missions"
+d1players="$dest_d1/Players"
+d1screenshots="$dest_d1/Screenshots"
+d1soundtracks="$dest_d1/Soundtracks"
 
-# Make the d2x-rebirth folder structures
-mkdir "$dest_d2/data"
-mkdir "$dest_d2/demos"
-mkdir "$dest_d2/missions"
-mkdir "$dest_d2/players"
-mkdir "$dest_d2/screenshots"
-mkdir "$dest_d2/soundtracks"
-mkdir "$dest_d2/jukebox"
-mkdir "$dest_d2/music"
+mkdir "$d1data"
+mkdir "$d1demos"
+mkdir "$d1missions"
+mkdir "$d1players"
+mkdir "$d1screenshots"
+mkdir "$d1soundtracks"
+
+# Define the path and then Make the d2x-redux folder structures
+d2data="$dest_d2/Data"
+d2demos="$dest_d2/Demos"
+d2missions="$dest_d2/Missions"
+d2players="$dest_d2/Players"
+d2screenshots="$dest_d2/Screenshots"
+d2soundtracks="$dest_d2/Soundtracks"
+d2jukebox="$dest_d2/Jukebox"
+d2music="$dest_d2/Music"
+
+mkdir "$d2data"
+mkdir "$d2demos"
+mkdir "$d2missions"
+mkdir "$d2players"
+mkdir "$d2screenshots"
+mkdir "$d2soundtracks"
+mkdir "$d2jukebox"
+mkdir "$d2music"
 
 # Download the shareware files
-D1X_SHARE_URL_HOG='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent/shareware/descent.hog'
-D1X_SHARE_URL_PIG='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent/shareware/descent.pig'
+D1X_SHARE_URL_HOG='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent/shareware/descent.hog'
+D1X_SHARE_URL_PIG='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent/shareware/descent.pig'
 
-D2X_SHARE_URL_HAM='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent2/shareware/D2DEMO.HAM'
-D2X_SHARE_URL_HOG='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent2/shareware/D2DEMO.HOG'
-D2X_SHARE_URL_PIG='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent2/shareware/D2DEMO.PIG'
+D2X_SHARE_URL_HAM='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent2/shareware/D2DEMO.HAM'
+D2X_SHARE_URL_HOG='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent2/shareware/D2DEMO.HOG'
+D2X_SHARE_URL_PIG='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent2/shareware/D2DEMO.PIG'
 
-D1X_HIGH_TEXTURE_URL='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent/other/d1xr-hires.dxa'
+D1X_HIGH_TEXTURE_URL='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent/other/d1xr-hires.dxa'
 D1X_OGG_URL='https://github.com/pudlez/dxx-addons/releases/download/v1.0/d1xr-sc55-music.dxa'
 D2X_OGG_URL='https://github.com/pudlez/dxx-addons/releases/download/v1.0/d2xr-sc55-music.dxa'
 
 # Download / unpack / install Descent shareware files
-if [[ ! -f "$dest_d1/data/descent.hog" ]]; then
-    wget -P "$dest_d1/data/" "$D1X_SHARE_URL_HOG" 
+if [[ ! -f "$d1data/descent.hog" ]]; then
+    wget -P "$d1data/" "$D1X_SHARE_URL_HOG" 
 fi
 
-if [[ ! -f "$dest_d1/data/descent.pig" ]]; then
-    wget -P "$dest_d1/data/" "$D1X_SHARE_URL_PIG"
+if [[ ! -f "$d1data/descent.pig" ]]; then
+    wget -P "$d1data/" "$D1X_SHARE_URL_PIG"
 fi
 
 # High Res Texture Pack
@@ -97,36 +133,49 @@ if [[ ! -f "$dest_d1/d1xr-hires.dxa" ]]; then
 fi
 
 # Ogg Sound Replacement (Roland Sound Canvas SC-55 MIDI)
-if [[ ! -f "$dest_d1/d1xr-sc55-music.dxa" ]]; then
-    wget -P "$dest_d1" "$D1X_OGG_URL"
+if [[ ! -f "$d1soundtracks/d1xr-sc55-music.dxa" ]]; then
+    wget -P "$d1soundtracks" "$D1X_OGG_URL"
 fi
 
 # Download / unpack / install Descent 2 shareware files
-if [[ ! -f "$dest_d2/data/D2DEMO.HAM" ]]; then
-    wget -P "$dest_d2/data/" "$D2X_SHARE_URL_HAM"
+if [[ ! -f "$d2data/D2DEMO.HAM" ]]; then
+    wget -P "$d2data/" "$D2X_SHARE_URL_HAM"
 fi
-if [[ ! -f "$dest_d2/data/D2DEMO.HOG" ]]; then
-    wget -P "$dest_d2/data/" "$D2X_SHARE_URL_HOG"
+if [[ ! -f "$d2data/D2DEMO.HOG" ]]; then
+    wget -P "$d2data/" "$D2X_SHARE_URL_HOG"
 fi
-if [[ ! -f "$dest_d2/data/D2DEMO.PIG" ]]; then
-    wget -P "$dest_d2/data/" "$D2X_SHARE_URL_PIG"
+if [[ ! -f "$d2data/D2DEMO.PIG" ]]; then
+    wget -P "$d2data/" "$D2X_SHARE_URL_PIG"
 fi
 
 # Ogg Sound Replacement (Roland Sound Canvas SC-55 MIDI)
-if [[ ! -f "$dest_d2/d2xr-sc55-music.dxa" ]]; then
-    wget -P "$dest_d2" "$D2X_OGG_URL"
+if [[ ! -f "$d2music/d2xr-sc55-music.dxa" ]]; then
+    wget -P "$d2music" "$D2X_OGG_URL"
 fi
 
 #Fix ownerships
 chown -R $user:$user "$dest_d1" "$dest_d2"
 
+
+#Copy the original settings file so we can customize
+cp $dest_d1/d1x-default.ini $dest_d1/d1x.ini
+
+# Set the Hog directory to the correct Data or data directory
+sed -i "/;-hogdir <s>/a\-hogdir $d1data" $dest_d1/d1x.ini
+
+# Configure the use of the players directory
+sed -i "/;-use_players_dir/a\-use_players_dir" $dest_d1/d1x.ini
+
+# Enable Debug
+sed -i "/;-debug/a\-debug" $dest_d1/d1x.ini
+
+# Enable Verbose
+sed -i "/;-verbose/a\-verbose" $dest_d1/d1x.ini
+
+# Enable Debug
+sed -i "/;-safelog/a\-safelog" $dest_d1/d1x.ini
+
 # Execute
-# $dest_d1/d1x-rebirth
-
-#Backup the original settings file
-cp $dest_d1/d1x.ini $dest_d1/d1x-default.ini
-
-# Set the Hog directory to the /data directory
-sed "/;-hogdir <s>/a\-hogdir \"$dest_d1/data\"" $dest_d1/d1x-default.ini > $dest_d1/d1x.ini
-
-$dest_d1/d1x-rebirth
+# $dest_d1/d1x-redux
+cd $dest_d1
+$dest_d1/d1x-redux
