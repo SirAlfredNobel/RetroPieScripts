@@ -23,7 +23,7 @@ sudo apt install build-essential scons libsdl1.2-dev libsdl-image1.2-dev libsdl-
 gcc --version
 
 #On a Rpi5 Only
-f cat /proc/cpuinfo | grep -q 'Raspberry Pi 5'; then
+if cat /proc/cpuinfo | grep -q 'Raspberry Pi 5'; then
 CFLAGS='-march=armv8.2-a+crypto+fp16+rcpc+dotprod -mcpu=cortex-a76+crypto -mtune=cortex-a76 -mfix-cortex-a53-835769 -mfix-cortex-a53-843419' CXXFLAGS="${CFLAGS}"
 
 # Turn off the excessive gcc preprocessor warnings:
