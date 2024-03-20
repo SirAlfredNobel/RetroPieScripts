@@ -118,17 +118,17 @@ D1X_OGG_URL='https://github.com/pudlez/dxx-addons/releases/download/v1.0/d1xr-sc
 D2X_OGG_URL='https://github.com/pudlez/dxx-addons/releases/download/v1.0/d2xr-sc55-music.dxa'
 
 # Download / unpack / install Descent shareware files
-if [[ ! -f "$dest_d1/data/descent.hog" ]]; then
-    wget -P "$dest_d1/data/" "$D1X_SHARE_URL_HOG" 
+if [[ ! -f "$d1data/descent.hog" ]]; then
+    wget -P "$d1data/" "$D1X_SHARE_URL_HOG" 
 fi
 
-if [[ ! -f "$dest_d1/data/descent.pig" ]]; then
-    wget -P "$dest_d1/data/" "$D1X_SHARE_URL_PIG"
+if [[ ! -f "$d1data/descent.pig" ]]; then
+    wget -P "$d1data/" "$D1X_SHARE_URL_PIG"
 fi
 
 # High Res Texture Pack
-if [[ ! -f "$dest_d1/d1xr-hires.dxa" ]]; then
-    wget -P "$dest_d1" "$D1X_HIGH_TEXTURE_URL"
+if [[ ! -f "$d1data/d1xr-hires.dxa" ]]; then
+    wget -P "$d1data/" "$D1X_HIGH_TEXTURE_URL"
 fi
 
 # Ogg Sound Replacement (Roland Sound Canvas SC-55 MIDI)
@@ -137,14 +137,14 @@ if [[ ! -f "$dest_d1/d1xr-sc55-music.dxa" ]]; then
 fi
 
 # Download / unpack / install Descent 2 shareware files
-if [[ ! -f "$dest_d2/data/D2DEMO.HAM" ]]; then
-    wget -P "$dest_d2/data/" "$D2X_SHARE_URL_HAM"
+if [[ ! -f "$d2data/D2DEMO.HAM" ]]; then
+    wget -P "$d2data/" "$D2X_SHARE_URL_HAM"
 fi
-if [[ ! -f "$dest_d2/data/D2DEMO.HOG" ]]; then
-    wget -P "$dest_d2/data/" "$D2X_SHARE_URL_HOG"
+if [[ ! -f "$d2data/D2DEMO.HOG" ]]; then
+    wget -P "$d2data/" "$D2X_SHARE_URL_HOG"
 fi
-if [[ ! -f "$dest_d2/data/D2DEMO.PIG" ]]; then
-    wget -P "$dest_d2/data/" "$D2X_SHARE_URL_PIG"
+if [[ ! -f "$d2data/D2DEMO.PIG" ]]; then
+    wget -P "$d2data/" "$D2X_SHARE_URL_PIG"
 fi
 
 # Ogg Sound Replacement (Roland Sound Canvas SC-55 MIDI)
@@ -162,23 +162,23 @@ chown -R $user:$user "$dest_d1" "$dest_d2"
 cp $dest_d1/d1x.ini $dest_d1/d1x-default.ini
 
 # Set the Hog directory to the /data directory
-sed "/;-hogdir <s>/a\-hogdir \"$dest_d1/data\"" $dest_d1/d1x-default.ini > $dest_d1/d1x.ini
+sed "/;-hogdir <s>/a\-hogdir $d1data" $dest_d1/d1x-default.ini > $dest_d1/d1x.ini
 
 
 # Configure the use of the players directory
 sed -i "/;-use_players_dir/a\-use_players_dir" $dest_d1/d1x.ini
 
 # Enable Debug
-sed -i "/;-debug/a\-debug" $dest_d1/d1x.ini
+#sed -i "/;-debug/a\-debug" $dest_d1/d1x.ini
 
 # Enable Verbose
-sed -i "/;-verbose/a\-verbose" $dest_d1/d1x.ini
+#sed -i "/;-verbose/a\-verbose" $dest_d1/d1x.ini
 
-# Enable Debug
-sed -i "/;-safelog/a\-safelog" $dest_d1/d1x.ini
+# Enable Safelog
+#sed -i "/;-safelog/a\-safelog" $dest_d1/d1x.ini
 
 
 # Execute
 # $dest_d1/d1x-rebirth
 cd $dest_d1
-$dest_d1/d1x-rebirth
+#$dest_d1/d1x-rebirth
