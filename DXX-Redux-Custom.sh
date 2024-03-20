@@ -3,7 +3,6 @@
 # /home/admin/RetroPie-Setup/scriptmodules/ports/dxx-rebirth.sh
 
 #Setup the build directory so we can avoid constant references
-
 md_build="$HOME/Descent/dxx-redux"
 ports_root="$HOME/RetroPie/roms/ports"
 ports_config_root="/opt/retropie/configs/ports"
@@ -18,6 +17,9 @@ cd dxx-redux
 
 #Setup Dependencies
 sudo apt install build-essential git cmake libphysfs-dev libsdl1.2-dev libsdl-mixer1.2-dev libpng-dev libglew-dev
+
+#Check GCC Version
+gcc --version
 
 #Setup cmake for D1
 cd $md_build/d1

@@ -3,7 +3,6 @@
 # /home/admin/RetroPie-Setup/scriptmodules/ports/dxx-rebirth.sh
 
 #Setup the build directory so we can avoid constant references
-
 md_build="$HOME/Descent/dxx-rebirth"
 ports_root="$HOME/RetroPie/roms/ports"
 ports_config_root="/opt/retropie/configs/ports"
@@ -17,10 +16,14 @@ git clone https://github.com/dxx-rebirth/dxx-rebirth
 cd dxx-rebirth
 
 #Setup Dependencies
-sudo apt install build-essential scons libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libphysfs-dev
+sudo apt install build-essential scons libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libphysfs-dev libstdc++6
 
 #Check GCC Version
 gcc --version
+
+# Correct an error caused by an error when linking against lib64
+# d1x-rebirth: /lib/aarch64-linux-gnu/libstdc++.so.6: version `GLIBCXX_3.4.31' not found
+export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 
 #On a Rpi5 Only
 if cat /proc/cpuinfo | grep -q 'Raspberry Pi 5'; then
@@ -30,17 +33,24 @@ fi
 CPPFLAGS='-Wp,-w'
 
 #Setup scons with correct flags WORKING?!?
-sudo scons raspberrypi=mesa opengl=yes opengles=no sdl2=yes ipv6=yes words_need_alignment=yes CXXFLAGS="${CXXFLAGS}" CPPFLAGS="${CPPFLAGS}" 
+if cat /proc/cpuinfo | grep -q 'Raspberry Pi 5'; then
+    sudo scons -Q -j 4 raspberrypi=mesa opengl=yes opengles=no sdl2=yes ipv6=yes words_need_alignment=yes CXXFLAGS="${CXXFLAGS}" CPPFLAGS="${CPPFLAGS}"
+else
+    ECHO "FAILED to see it as a pi 5"
+    # sudo scons raspberrypi=mesa opengl=yes opengles=no sdl2=yes ipv6=yes words_need_alignment=yes CXXFLAGS="${CXXFLAGS}" CPPFLAGS="${CPPFLAGS}" 
+fi
+
 
 #Create RetroPie Ports Installation of DXX-Rebirth
-dest_d1="$ports_root/descent1"
-dest_d2="$ports_root/descent2"
+dest_d1="$ports_root/d1x-rebirth"
+dest_d2="$ports_root/d2x-rebirth"
 mkdir "$dest_d1"
 mkdir "$dest_d2"
 
 #Copy compiled binaries to final destinations
-cp "$md_build/build/d1x-rebirth/d1x-rebirth" "$dest_d1/"
-cp "$md_build/build/d2x-rebirth/d2x-rebirth" "$dest_d2/"
+# Configure with BIN_DIR ?
+cp -rf "$md_build/build/d1x-rebirth/d1x-rebirth" "$dest_d1/"
+cp -rf "$md_build/build/d2x-rebirth/d2x-rebirth" "$dest_d2/"
 
 # Copy files from build to destination folders in ports
 #D1
@@ -61,33 +71,49 @@ cp "$md_build/GPL-3.txt" "$dest_d2/"
 cp "$md_build/d2x-rebirth/README.RPi" "$dest_d2/"
 cp "$md_build/d2x-rebirth/d2x.ini" "$dest_d2/"
 
-# Make the d1x-rebirth folder structures
-mkdir "$dest_d1/data"
-mkdir "$dest_d1/demos"
-mkdir "$dest_d1/missions"
-mkdir "$dest_d1/players"
-mkdir "$dest_d1/screenshots"
-mkdir "$dest_d1/soundtracks"
+# Define the path and then Make the d1x-redux folder structures
+d1data="$dest_d1/data"
+d1demos="$dest_d1/demos"
+d1missions="$dest_d1/missions"
+d1players="$dest_d1/players"
+d1screenshots="$dest_d1/screenshots"
+d1soundtracks="$dest_d1/soundtracks"
 
-# Make the d2x-rebirth folder structures
-mkdir "$dest_d2/data"
-mkdir "$dest_d2/demos"
-mkdir "$dest_d2/missions"
-mkdir "$dest_d2/players"
-mkdir "$dest_d2/screenshots"
-mkdir "$dest_d2/soundtracks"
-mkdir "$dest_d2/jukebox"
-mkdir "$dest_d2/music"
+mkdir "$d1data"
+mkdir "$d1demos"
+mkdir "$d1missions"
+mkdir "$d1players"
+mkdir "$d1screenshots"
+mkdir "$d1soundtracks"
+
+# Define the path and then Make the d2x-redux folder structures
+d2data="$dest_d2/data"
+d2demos="$dest_d2/demos"
+d2missions="$dest_d2/missions"
+d2players="$dest_d2/players"
+d2screenshots="$dest_d2/screenshots"
+d2soundtracks="$dest_d2/soundtracks"
+d2jukebox="$dest_d2/jukebox"
+d2music="$dest_d2/music"
+
+mkdir "$d2data"
+mkdir "$d2demos"
+mkdir "$d2missions"
+mkdir "$d2players"
+mkdir "$d2screenshots"
+mkdir "$d2soundtracks"
+mkdir "$d2jukebox"
+mkdir "$d2music"
 
 # Download the shareware files
-D1X_SHARE_URL_HOG='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent/shareware/descent.hog'
-D1X_SHARE_URL_PIG='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent/shareware/descent.pig'
+D1X_SHARE_URL_HOG='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent/shareware/descent.hog'
+D1X_SHARE_URL_PIG='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent/shareware/descent.pig'
 
-D2X_SHARE_URL_HAM='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent2/shareware/D2DEMO.HAM'
-D2X_SHARE_URL_HOG='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent2/shareware/D2DEMO.HOG'
-D2X_SHARE_URL_PIG='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent2/shareware/D2DEMO.PIG'
+D2X_SHARE_URL_HAM='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent2/shareware/D2DEMO.HAM'
+D2X_SHARE_URL_HOG='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent2/shareware/D2DEMO.HOG'
+D2X_SHARE_URL_PIG='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent2/shareware/D2DEMO.PIG'
 
-D1X_HIGH_TEXTURE_URL='https://github.com/JeodC/PortMaster-Descent/blob/main/addons/descent/other/d1xr-hires.dxa'
+D1X_HIGH_TEXTURE_URL='https://github.com/JeodC/PortMaster-Descent/raw/main/addons/descent/other/d1xr-hires.dxa'
 D1X_OGG_URL='https://github.com/pudlez/dxx-addons/releases/download/v1.0/d1xr-sc55-music.dxa'
 D2X_OGG_URL='https://github.com/pudlez/dxx-addons/releases/download/v1.0/d2xr-sc55-music.dxa'
 
@@ -138,4 +164,21 @@ cp $dest_d1/d1x.ini $dest_d1/d1x-default.ini
 # Set the Hog directory to the /data directory
 sed "/;-hogdir <s>/a\-hogdir \"$dest_d1/data\"" $dest_d1/d1x-default.ini > $dest_d1/d1x.ini
 
+
+# Configure the use of the players directory
+sed -i "/;-use_players_dir/a\-use_players_dir" $dest_d1/d1x.ini
+
+# Enable Debug
+sed -i "/;-debug/a\-debug" $dest_d1/d1x.ini
+
+# Enable Verbose
+sed -i "/;-verbose/a\-verbose" $dest_d1/d1x.ini
+
+# Enable Debug
+sed -i "/;-safelog/a\-safelog" $dest_d1/d1x.ini
+
+
+# Execute
+# $dest_d1/d1x-rebirth
+cd $dest_d1
 $dest_d1/d1x-rebirth
