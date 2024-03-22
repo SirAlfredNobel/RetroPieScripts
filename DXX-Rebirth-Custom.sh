@@ -61,6 +61,8 @@ cp "$md_build/COPYING.txt" "$dest_d1/"
 cp "$md_build/GPL-3.txt" "$dest_d1/"
 cp "$md_build/d1x-rebirth/README.RPi" "$dest_d1/"
 cp "$md_build/d1x-rebirth/d1x.ini" "$dest_d1/"
+cp "$md_build/d1x-rebirth/d1x-rebirth.png" "$dest_d1/"
+cp "$md_build/d1x-rebirth/d1x-rebirth.xpm" "$dest_d1/"
 
 #D2
 cp "$md_build/d2x-rebirth/INSTALL.txt" "$dest_d2/D2X-INSTALL.txt"
@@ -70,6 +72,8 @@ cp "$md_build/COPYING.txt" "$dest_d2/"
 cp "$md_build/GPL-3.txt" "$dest_d2/"
 cp "$md_build/d2x-rebirth/README.RPi" "$dest_d2/"
 cp "$md_build/d2x-rebirth/d2x.ini" "$dest_d2/"
+cp "$md_build/d2x-rebirth/d2x-rebirth.png" "$dest_d2/"
+cp "$md_build/d2x-rebirth/d2x-rebirth.xpm" "$dest_d2/"
 
 # Define the path and then Make the d1x-redux folder structures
 d1data="$dest_d1/data"
@@ -132,8 +136,8 @@ if [[ ! -f "$d1data/d1xr-hires.dxa" ]]; then
 fi
 
 # Ogg Sound Replacement (Roland Sound Canvas SC-55 MIDI)
-if [[ ! -f "$dest_d1/d1xr-sc55-music.dxa" ]]; then
-    wget -P "$dest_d1" "$D1X_OGG_URL"
+if [[ ! -f "$d1data/d1xr-sc55-music.dxa" ]]; then
+    wget -P "$d1data/" "$D1X_OGG_URL"
 fi
 
 # Download / unpack / install Descent 2 shareware files
@@ -148,21 +152,20 @@ if [[ ! -f "$d2data/D2DEMO.PIG" ]]; then
 fi
 
 # Ogg Sound Replacement (Roland Sound Canvas SC-55 MIDI)
-if [[ ! -f "$dest_d2/d2xr-sc55-music.dxa" ]]; then
-    wget -P "$dest_d2" "$D2X_OGG_URL"
+if [[ ! -f "$d2data/d2xr-sc55-music.dxa" ]]; then
+    wget -P "$d2data/" "$D2X_OGG_URL"
 fi
 
 #Fix ownerships
 chown -R $user:$user "$dest_d1" "$dest_d2"
 
-# Execute
-# $dest_d1/d1x-rebirth
+# Configure D1x-Rebirth Settings
 
 #Backup the original settings file
 cp $dest_d1/d1x.ini $dest_d1/d1x-default.ini
 
 # Set the Hog directory to the /data directory
-sed "/;-hogdir <s>/a\-hogdir $d1data" $dest_d1/d1x-default.ini > $dest_d1/d1x.ini
+sed -i "/;-hogdir <s>/a\-hogdir $d1data" $dest_d1/d1x.ini
 
 
 # Configure the use of the players directory
@@ -177,8 +180,35 @@ sed -i "/;-use_players_dir/a\-use_players_dir" $dest_d1/d1x.ini
 # Enable Safelog
 #sed -i "/;-safelog/a\-safelog" $dest_d1/d1x.ini
 
+# Configure D2x-Rebirth Settings
 
-# Execute
+#Backup the original settings file
+cp $dest_d2/d2x.ini $dest_d2/d2x-default.ini
+
+# Set the Hog directory to the /data directory
+sed -i "/;-hogdir <s>/a\-hogdir $d2data" $dest_d2/d2x.ini
+
+
+# Configure the use of the players directory
+sed -i "/;-use_players_dir/a\-use_players_dir" $dest_d2/d2x.ini
+
+# Enable Debug
+#sed -i "/;-debug/a\-debug" $dest_d1/d1x.ini
+
+# Enable Verbose
+#sed -i "/;-verbose/a\-verbose" $dest_d1/d1x.ini
+
+# Enable Safelog
+#sed -i "/;-safelog/a\-safelog" $dest_d1/d1x.ini
+
+
+
+# Execute D1
 # $dest_d1/d1x-rebirth
-cd $dest_d1
-#$dest_d1/d1x-rebirth
+# cd $dest_d1
+# $dest_d1/d1x-rebirth
+
+# Execute D2
+# $dest_d2/d2x-rebirth
+# cd $dest_d2
+# $dest_d2/d2x-rebirth
