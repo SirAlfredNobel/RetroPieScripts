@@ -34,7 +34,7 @@ CPPFLAGS='-Wp,-w'
 
 #Setup scons with correct flags WORKING?!?
 if cat /proc/cpuinfo | grep -q 'Raspberry Pi 5'; then
-    sudo scons -Q -j 4 raspberrypi=mesa opengl=yes opengles=no sdl2=yes ipv6=yes words_need_alignment=yes CXXFLAGS="${CXXFLAGS}" CPPFLAGS="${CPPFLAGS}"
+    time sudo scons -Q -j 4 raspberrypi=mesa opengl=yes opengles=no sdl2=yes ipv6=yes words_need_alignment=yes CXXFLAGS="${CXXFLAGS}" CPPFLAGS="${CPPFLAGS}"
 else
     ECHO "FAILED to see it as a pi 5"
     # sudo scons raspberrypi=mesa opengl=yes opengles=no sdl2=yes ipv6=yes words_need_alignment=yes CXXFLAGS="${CXXFLAGS}" CPPFLAGS="${CPPFLAGS}" 
